@@ -1,0 +1,32 @@
+#!/usr/bin/env python
+
+import argparse
+import sys
+import traceback
+import subparsers
+from exceptions import BasicException
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(prog='climulon')
+    subpars = parser.add_subparsers()
+
+    # Add subparsers
+    subparsers.add_parser_provision(subpars)
+    subparsers.add_parser_decommission(subpars)
+    subparsers.add_parser_deploy_cf_codeship(subpars)
+    subparsers.add_parser_status_cf_codeship(subpars)
+    subparsers.add_parser_cleanup_ecr(subpars)
+
+    if not len(sys.argv) > 1:
+        parser.print_help()
+    else:
+        args = parser.parse_args()
+        try:
+            args.func(args)
+        except Exception as e:
+            if isinstance(e, BasicException):
+                print(e.message)
+            else:
+                traceback.print_exc()
+                sys.exit(127)
+            sys.exit(1)

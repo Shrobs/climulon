@@ -1,0 +1,59 @@
+# Climulon
+
+Climulon is a CLI that eases the process of managing complex infrastructure and deployments of docker containers in AWS, while being faithful to the tenets of infrastructure-as-code.
+
+It goes this way :
+- Describe your infrastructure and add it to your repo
+- Provision with Climulon
+- Deploy with Climulon
+
+## Description
+
+Climulon is a CLI that takes care of provisionning and decommissioning a set of cloudformation templates in AWS, in a modular fashion. Each template of the set can be duplicated, modified or changed, or removed on its own, without impacting the set.
+It also takes care of deploying docker images to AWS ECS, and checking the status of the scheduler that is running them.
+
+Climulon consumes configuration files using a templating language similar to the AWS Cloudformation one, to link the multiple templates that describe the infrastructure and the scheduler that runs the docker containers.
+
+## Getting started 
+
+### Prerequisites
+
+Climulon runs on python 3 only.
+Its only dependency is `boto3`
+
+### Installing
+
+You can either install Climulon's dependencies, or either build its docker image.
+
+To install Climulon's dependencies, run the following :
+- If your system have python 3 as default version:
+```
+pip install -r requirements.txt
+```
+- If your system have python 2 as default version, make sure that python 3 and pip 3 are installed, and run the following :
+```
+pip3 install -r requirements.txt
+```
+
+If you want to run Climulon from its docker image, just build it locally :
+```
+docker build
+```
+
+### Using the CLI
+
+#### Provisionning 
+
+Documentation in progress
+
+#### Decommission
+
+Documentation in progress
+
+#### Deployment
+
+Documentation in progress
+
+#### Status check
+
+Documentation in progress
