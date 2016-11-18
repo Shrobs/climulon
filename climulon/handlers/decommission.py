@@ -61,7 +61,7 @@ def run_decommission(conf, stackSubset):
             if template["ComputeStack"].lower() == "true":
                 print("Deregistering task definitions...")
                 client = boto3.client('ecs', region_name=template["StackRegion"])
-                for key, value in config["taskDefsParameters"].items():
+                for key, value in config["globalParameters"].items():
                     if "TASK_DEF_NAME" in key:
                         taskDefRevs = client.list_task_definitions(
                             familyPrefix=value,

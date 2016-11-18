@@ -69,13 +69,13 @@ def run_provision(conf, stackSubset, timeout, dry_run):
 
         for stack in listStacksResponse["StackSummaries"]:
             if stack["StackName"] == template["StackName"]:
-                raise StackExistsError(stackName)
+                raise StackExistsError(template["StackName"])
 
         if template["ComputeStack"].lower() == "true":
             # Checking if there are task defs with same names
             print("Checking if there are task defs with current names")
             client = boto3.client('ecs', region_name=template["StackRegion"])
-            for key, value in config["taskDefsParameters"].items():
+            for key, value in config["globalParameters"].items():
                 if "TASK_DEF_NAME" in key:
                     similarTaskDefs = client.list_task_definition_families(
                         familyPrefix=value, status="ACTIVE")
@@ -161,8 +161,12 @@ def run_provision(conf, stackSubset, timeout, dry_run):
                     print(stack["StackStatusReason"])
                 elif stack["StackStatus"] == 'CREATE_COMPLETE':
                     print("Stack creation complete")
-                    print("Stack Output :")
-                    stackOutputs = stack["Outputs"]
+                    if "Outputs" in stack:
+                        print("Stack Output :")
+                        stackOutputs = stack["Outputs"]
+                    else:
+                        print("Stack with no output to print")
+                        stackOutputs = None
                     break
                 else:
                     print("Stack creation in progress")
@@ -176,7 +180,12 @@ def run_provision(conf, stackSubset, timeout, dry_run):
                     describeStackResponse = client.describe_stacks(
                         StackName=template["StackName"])
                     stack = describeStackResponse["Stacks"][0]
-                    stackOutputs = stack["Outputs"]
+                    if "Outputs" in stack:
+                        print("Stack Output :")
+                        stackOutputs = stack["Outputs"]
+                    else:
+                        print("Stack with no output to print")
+                        stackOutputs = None
             if not stackOutputs:
                 print("Stack does not exist, ignoring step")
 
@@ -191,7 +200,7 @@ def run_provision(conf, stackSubset, timeout, dry_run):
 
             utils.mergeOutputConfig(configOutput, configParams, template)
 
-        if template["ComputeStack"].lower() == "true":
+        if template["ComputeStack"].lower() == "true" and template["StackName"] in stackSubset:
             tasksDefsContent = taskDefs.fill_taskDef_templates(
                 tasksDefsContent, configParams, configOutput)
 

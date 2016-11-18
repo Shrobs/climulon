@@ -16,7 +16,7 @@ def checkConfigFile(path):
         "infrastructureTemplates",
         "taskDefsTemplates",
         "servicesTemplates",
-        "taskDefsParameters"
+        "globalParameters"
     ]
 
     requiredFieldsTemplates = [
@@ -115,7 +115,7 @@ def check_and_get_conf(conf):
 
     # Getting config parameters
     configParams = {}
-    configParams.update(config["taskDefsParameters"])
+    configParams.update(config["globalParameters"])
     for template in config["infrastructureTemplates"]:
         configParams.update(template["StackParameters"])
 
