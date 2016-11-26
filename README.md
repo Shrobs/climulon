@@ -47,6 +47,13 @@ docker pull shrobs/climulon:latest
 
 ### Using the CLI
 
+#### Live examples
+
+You can test how **Climulon** works by trying these two projects :
+- [Django app](https://github.com/Shrobs/climulon-example-python)
+- [Node express app](https://github.com/Shrobs/climulon-example-nodejs)
+Just follow the instructions on the readmes.
+
 #### Provisionning 
 
 An environment can be provisionned using a single command :
@@ -54,7 +61,7 @@ An environment can be provisionned using a single command :
 climulon provision -c infrastructure.json
 ```
 Where `infrastructure.json` is a config file describing your whole infrastructure.
-Detailed examples can be found [here](https://github.com/Shrobs/climulon-example-python) and [here](https://github.com/Shrobs/climulon-example-nodejs)
+Detailed examples can be found in the Live examples section
 
 #### Decommission
 
@@ -63,7 +70,7 @@ An environment can be decommission using a single command :
 climulon decommission -c infrastructure.json
 ```
 Where `infrastructure.json` is a config file describing your whole infrastructure.
-Detailed examples can be found [here](https://github.com/Shrobs/climulon-example-python) and [here](https://github.com/Shrobs/climulon-example-nodejs)
+Detailed examples can be found in the Live examples section
 
 #### Deployment
 
@@ -76,5 +83,5 @@ An environment can be decommission using a single command :
 climulon status -c infrastructure.json
 ```
 Where `infrastructure.json` is a config file describing your whole infrastructure.
-Detailed examples can be found [here](https://github.com/Shrobs/climulon-example-python) and [here](https://github.com/Shrobs/climulon-example-nodejs)
+Detailed examples can be found in the Live examples section
 
