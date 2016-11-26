@@ -35,20 +35,35 @@ pip install -r requirements.txt
 pip3 install -r requirements.txt
 ```
 
-If you want to run Climulon from its docker image, just build it locally :
+If you want to run Climulon by building its docker image, just build it locally :
 ```
 docker build
+```
+
+You can also download the docker image directy from docker hub :
+```
+docker pull shrobs/climulon:latest
 ```
 
 ### Using the CLI
 
 #### Provisionning 
 
-Documentation in progress
+An environment can be provisionned using a single command :
+```
+climulon provision -c infrastructure.json
+```
+Where `infrastructure.json` is a config file describing your whole infrastructure.
+Detailed examples can be found [here](https://github.com/Shrobs/climulon-example-python) and [here](https://github.com/Shrobs/climulon-example-nodejs)
 
 #### Decommission
 
-Documentation in progress
+An environment can be decommission using a single command :
+```
+climulon decommission -c infrastructure.json
+```
+Where `infrastructure.json` is a config file describing your whole infrastructure.
+Detailed examples can be found [here](https://github.com/Shrobs/climulon-example-python) and [here](https://github.com/Shrobs/climulon-example-nodejs)
 
 #### Deployment
 
@@ -56,4 +71,10 @@ Documentation in progress
 
 #### Status check
 
-Documentation in progress
+An environment can be decommission using a single command :
+```
+climulon status -c infrastructure.json
+```
+Where `infrastructure.json` is a config file describing your whole infrastructure.
+Detailed examples can be found [here](https://github.com/Shrobs/climulon-example-python) and [here](https://github.com/Shrobs/climulon-example-nodejs)
+
