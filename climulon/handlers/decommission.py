@@ -17,7 +17,7 @@ def run_decommission(conf, stackSubset):
      servicesContent) = utils.check_and_get_conf(conf)
 
     if stackSubset:
-        print("Stack list detected, will only provision this sub-set "
+        print("Stack list detected, will only decommission this sub-set "
               "of stacks :")
         print(stackSubset)
     else:
