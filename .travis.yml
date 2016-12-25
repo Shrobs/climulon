@@ -4,12 +4,12 @@ services:
   - docker
 
 script:
-  - docker build -t shrobs/climulon-test:latest .
+  - docker build -t shrobs/climulon:latest .
 
 after_success:
   - if [[ $TRAVIS_TAG =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$ ]]; then
     docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push shrobs/climulon-test:latest;
-    docker tag shrobs/climulon-test:latest shrobs/climulon-test:$TRAVIS_TAG;
-    docker push shrobs/climulon-test:$TRAVIS_TAG;
+    docker push shrobs/climulon:latest;
+    docker tag shrobs/climulon:latest shrobs/climulon:$TRAVIS_TAG;
+    docker push shrobs/climulon:$TRAVIS_TAG;
     fi
