@@ -1,0 +1,15 @@
+sudo: required
+
+services:
+  - docker
+
+script:
+  - docker build -t shrobs/climulon-test:latest .
+
+after_success:
+  - if [[ $TRAVIS_TAG =~ ^[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+$ ]]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push shrobs/climulon-test:latest;
+    docker tag shrobs/climulon-test:latest shrobs/climulon-test:$TRAVIS_TAG;
+    docker push shrobs/climulon-test:$TRAVIS_TAG;
+    fi
