@@ -1,5 +1,7 @@
 # Climulon
 
+[![Build Status](https://travis-ci.org/Shrobs/climulon.svg?branch=master)](https://travis-ci.org/Shrobs/climulon)
+
 Climulon is a CLI that eases the process of managing complex infrastructure and deployments of docker containers in AWS, while being faithful to the tenets of infrastructure-as-code.
 
 It goes this way :
