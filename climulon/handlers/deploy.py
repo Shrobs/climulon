@@ -14,41 +14,46 @@ def deploy_handler(args):
     conf = args.conf
     imageArgs = args.images
 
-    # "Var=image" regex
-    argRe = '^[\S]+=[\S]+$'
-    argRePattern = re.compile(argRe)
-
-    # Docker image regex
-    imageRe = ('^(?:(?=[^:\/]{4,253})(?!-)[a-zA-Z0-9-]{1,63}(?<!-)(?:\.(?!-)'
-               '[a-zA-Z0-9-]{1,63}(?<!-))*(?::[0-9]{1,5})?/)?((?![._-])'
-               '(?:[a-z0-9._-]*)(?<![._-])(?:/(?![._-])[a-z0-9._-]*(?<![._-]))*)'
-               '(?::(?![.-])[a-zA-Z0-9_.-]{1,128})?$')
-    imageRePattern = re.compile(imageRe)
-
     # Will contain the keys and values for the images that will overwrite those in
     # the master config file
     deployImages = {}
 
-    for imageArg in imageArgs:
-        if argRePattern.match(imageArg):
-            words = imageArg.split("=")
-            if len(words) > 2:
-                raise WrongFieldFormat(imageArg)
-            var = words[0]
-            image = words[1]
-            if imageRePattern.match(image):
-                deployImages[var] = image
+    if imageArgs is None:
+        # "Var=image" regex
+        argRe = '^[\S]+=[\S]+$'
+        argRePattern = re.compile(argRe)
+
+        # Docker image regex
+        imageRe = ('^(?:(?=[^:\/]{4,253})(?!-)[a-zA-Z0-9-]{1,63}(?<!-)(?:\.(?!-)'
+                   '[a-zA-Z0-9-]{1,63}(?<!-))*(?::[0-9]{1,5})?/)?((?![._-])'
+                   '(?:[a-z0-9._-]*)(?<![._-])(?:/(?![._-])[a-z0-9._-]*(?<![._-]))*)'
+                   '(?::(?![.-])[a-zA-Z0-9_.-]{1,128})?$')
+        imageRePattern = re.compile(imageRe)
+
+
+
+        for imageArg in imageArgs:
+            if argRePattern.match(imageArg):
+                words = imageArg.split("=")
+                if len(words) > 2:
+                    raise WrongFieldFormat(imageArg)
+                var = words[0]
+                image = words[1]
+                if imageRePattern.match(image):
+                    deployImages[var] = image
+                else:
+                    raise NotADockerImageName(image)
             else:
-                raise NotADockerImageName(image)
-        else:
-            raise WrongFieldFormat(imageArg)
+                raise WrongFieldFormat(imageArg)
 
     run_deployment(conf, deployImages)
 
 
 def run_deployment(conf, deployImages):
-    # Deploy by using updated templates
-    print("Using these arguments for image override : %s" % (deployImages))
+
+    if deployImages:
+        # Deploy by using updated templates
+        print("Using these arguments for image override : %s" % (deployImages))
 
     (config, configParams, templates, tasksDefsContent,
      servicesContent) = utils.check_and_get_conf(conf)
@@ -83,10 +88,11 @@ def run_deployment(conf, deployImages):
             else:
                 raise
 
-    # Overwriting parameters by those provided in the --images option
-    for key, value in configParams.items():
-        if key in deployImages:
-            configParams[key] = deployImages[key]
+    if deployImages:
+        # Overwriting parameters by those provided in the --images option
+        for key, value in configParams.items():
+            if key in deployImages:
+                configParams[key] = deployImages[key]
 
     if not ComputeStackFound:
         print("ERROR : No stack with ComputeStack set as True is "

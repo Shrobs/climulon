@@ -65,7 +65,6 @@ def add_parser_deploy(subparsers):
         '-i', '--images',
         help='Overrides the images that are in config file and use them '
         'for the deployment',
-        required=True,
         type=str, nargs='+')
     parser_deploy.set_defaults(func=deploy.deploy_handler)
 
