@@ -17,4 +17,6 @@ ADD climulon /code
 
 RUN ln -s /code/climulon /usr/bin/climulon
 
+ENV PYTHONUNBUFFERED 0
+
 WORKDIR /code
