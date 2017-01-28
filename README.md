@@ -62,6 +62,7 @@ Just follow the instructions on the readmes.
 #### Provisionning 
 
 An environment can be provisionned using a single command :  
+
 **Docker** :  
 
 ```
@@ -79,6 +80,7 @@ Detailed examples can be found in the Live examples section
 #### Decommission
 
 An environment can be Decommissioned using a single command :  
+
 **Docker** :  
 
 ```
@@ -96,6 +98,7 @@ Detailed examples can be found in the Live examples section
 #### Deployment
 
 An environment can be deployed using a single command :  
+
 **Docker** :  
  
 ```
@@ -113,6 +116,7 @@ Detailed examples can be found in the Live examples section
 #### Status check
 
 The status of an environment can be checked using a single command :  
+
 **Docker** :  
 
 ```
