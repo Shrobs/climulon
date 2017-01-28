@@ -25,9 +25,21 @@ Its only dependency is `boto3`
 
 ### Installing
 
-You can either install Climulon's dependencies, or either build its docker image.
+You can either use Climulon directly from its docker image, build the docker image locally or install it's dependencies and use it directly from your machine.
 
-To install Climulon's dependencies, run the following :
+**Recommended** :  
+Pull the latest Climulon docker image :
+```
+docker pull shrobs/climulon:latest
+```
+
+**Alternatively** :  
+If you want to run Climulon by building its docker image, just build it locally :
+```
+docker build
+```
+
+To install Climulon's dependencies and use it locally, run the following :
 - If your system have python 3 as default version:
 ```
 pip install -r requirements.txt
@@ -35,16 +47,6 @@ pip install -r requirements.txt
 - If your system have python 2 as default version, make sure that python 3 and pip 3 are installed, and run the following :
 ```
 pip3 install -r requirements.txt
-```
-
-If you want to run Climulon by building its docker image, just build it locally :
-```
-docker build
-```
-
-You can also download the docker image directy from docker hub :
-```
-docker pull shrobs/climulon:latest
 ```
 
 ### Using the CLI
@@ -59,32 +61,68 @@ Just follow the instructions on the readmes.
 
 #### Provisionning 
 
-An environment can be provisionned using a single command :
+An environment can be provisionned using a single command :  
+**Docker** :  
+
+```
+docker run -v ~/.aws:/root/.aws -v ~/project/infrastructure:/infrastructure shrobs/climulon climulon provision -c /infrastructure/infrastructure.json
+```
+Where `~/.aws` is the path to your aws configuration folder and `~/project/infrastructure` the path of your infrastructure as code folder.
+
+**Locally** :  
+
 ```
 climulon provision -c infrastructure.json
 ```
-Where `infrastructure.json` is a config file describing your whole infrastructure.
 Detailed examples can be found in the Live examples section
 
 #### Decommission
 
-An environment can be decommission using a single command :
+An environment can be Decommissioned using a single command :  
+**Docker** :  
+
+```
+docker run -v ~/.aws:/root/.aws -v ~/project/infrastructure:/infrastructure shrobs/climulon climulon decommission -c /infrastructure/infrastructure.json
+```
+Where `~/.aws` is the path to your aws configuration folder and `~/project/infrastructure` the path of your infrastructure as code folder.
+
+**Locally** :  
+
 ```
 climulon decommission -c infrastructure.json
 ```
-Where `infrastructure.json` is a config file describing your whole infrastructure.
 Detailed examples can be found in the Live examples section
 
 #### Deployment
 
-Documentation in progress
+An environment can be deployed using a single command :  
+**Docker** :  
+ 
+```
+docker run -v ~/.aws:/root/.aws -v ~/project/infrastructure:/infrastructure shrobs/climulon climulon deploy -c /infrastructure/infrastructure.json
+```
+Where `~/.aws` is the path to your aws configuration folder and `~/project/infrastructure` the path of your infrastructure as code folder.
+
+**Locally** :  
+
+```
+climulon deploy -c infrastructure.json
+```
+Detailed examples can be found in the Live examples section
 
 #### Status check
 
-An environment can be decommission using a single command :
+The status of an environment can be checked using a single command :  
+**Docker** :  
+
+```
+docker run -v ~/.aws:/root/.aws -v ~/project/infrastructure:/infrastructure shrobs/climulon climulon status -c /infrastructure/infrastructure.json
+```
+Where `~/.aws` is the path to your aws configuration folder and `~/project/infrastructure` the path of your infrastructure as code folder.
+
+**Locally** :
+
 ```
 climulon status -c infrastructure.json
 ```
-Where `infrastructure.json` is a config file describing your whole infrastructure.
 Detailed examples can be found in the Live examples section
-
