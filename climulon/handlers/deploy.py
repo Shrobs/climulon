@@ -5,26 +5,50 @@ import re
 from handlers import utils
 import taskDefs
 import services
+from handlers.exceptions import (WrongFieldFormat,
+                                 NotADockerImageName)
 
 
 def deploy_handler(args):
     # Handler for deploy by updating infra templates
     conf = args.conf
+    imageArgs = args.images
 
-    # Check if "CI_BRANCH" is in the X.X.X format, if so use it as tag
-    # Else use "CI_BRANCH--CI_COMMIT_ID" as tag
-    tag = os.environ['CI_BRANCH']
-    pattern = re.compile("^\d+\.\d+\.\d+$")
-    if not pattern.match(tag):
-        tag = os.environ['CI_BRANCH'] + "--" + os.environ['CI_COMMIT_ID']
+    # "Var=image" regex
+    argRe = '^[\S]+=[\S]+$'
+    argRePattern = re.compile(argRe)
 
-    run_deployment(conf, tag)
+    # Docker image regex
+    imageRe = ('^(?:(?=[^:\/]{4,253})(?!-)[a-zA-Z0-9-]{1,63}(?<!-)(?:\.(?!-)'
+               '[a-zA-Z0-9-]{1,63}(?<!-))*(?::[0-9]{1,5})?/)?((?![._-])'
+               '(?:[a-z0-9._-]*)(?<![._-])(?:/(?![._-])[a-z0-9._-]*(?<![._-]))*)'
+               '(?::(?![.-])[a-zA-Z0-9_.-]{1,128})?$')
+    imageRePattern = re.compile(imageRe)
+
+    # Will contain the keys and values for the images that will overwrite those in
+    # the master config file
+    deployImages = {}
+
+    for imageArg in imageArgs:
+        if argRePattern.match(imageArg):
+            words = imageArg.split("=")
+            if len(words) > 2:
+                raise WrongFieldFormat(imageArg)
+            var = words[0]
+            image = words[1]
+            if imageRePattern.match(image):
+                deployImages[var] = image
+            else:
+                raise NotADockerImageName(image)
+        else:
+            raise WrongFieldFormat(imageArg)
+
+    run_deployment(conf, deployImages)
 
 
-def run_deployment(conf, tag):
+def run_deployment(conf, deployImages):
     # Deploy by using updated templates
-    print("Using tag : %s" % (tag))
-    ComputeStackFound = False
+    print("Using these arguments for image override : %s" % (deployImages))
 
     (config, configParams, templates, tasksDefsContent,
      servicesContent) = utils.check_and_get_conf(conf)
@@ -59,11 +83,10 @@ def run_deployment(conf, tag):
             else:
                 raise
 
-    # Updating built images tags (images that are marked by BUILD_IMAGE_*)
+    # Overwriting parameters by those provided in the --images option
     for key, value in configParams.items():
-        if "BUILD_IMAGE" in key:
-            buildImageTag = value.split(":", 1)[0] + ":" + tag
-            configParams[key] = buildImageTag
+        if key in deployImages:
+            configParams[key] = deployImages[key]
 
     if not ComputeStackFound:
         print("ERROR : No stack with ComputeStack set as True is "
@@ -79,4 +102,5 @@ def run_deployment(conf, tag):
 
     services.update_services(servicesContent, template["StackRegion"])
 
-    print("Deployment complete")
+    print("Deployment started")
+    print("Run `Climulon status` to check the deployment status")
