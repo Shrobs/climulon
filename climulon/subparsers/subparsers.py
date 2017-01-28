@@ -61,6 +61,12 @@ def add_parser_deploy(subparsers):
         help='Name of the config file that describes the environment.',
         required=True,
         type=str)
+    parser_deploy.add_argument(
+        '-i', '--images',
+        help='Overrides the images that are in config file and use them '
+        'for the deployment',
+        required=True,
+        type=str, nargs='+')
     parser_deploy.set_defaults(func=deploy.deploy_handler)
 
 

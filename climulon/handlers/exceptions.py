@@ -149,3 +149,14 @@ class UnsupportedRegionError(BasicException):
                         " : %s" % (region))
         self.message += ("Choose from one of these regions :\n")
         self.message += str(possibleRegions)
+
+class WrongFieldFormat(BasicException):
+
+    def __init__(self, imageArg):
+        self.message = ("ERROR : Argument needs to be in the format : key=value\n")
+        self.message += ("Offending argument : %s" % imageArg)
+
+class NotADockerImageName(BasicException):
+
+    def __init__(self, image):
+        self.message = ("ERROR : Not a correct docker image name : %s" % (image))
