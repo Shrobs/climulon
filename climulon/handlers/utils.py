@@ -134,8 +134,12 @@ def check_and_get_conf(conf):
         templateTmp["TemplateContent"] = templateContent
         templates.append(templateTmp)
 
+    externalStacks = {}
+    if "externalStacks" in config:
+        externalStacks = config["externalStacks"]
+
     return (config, configParams, templates,
-            tasksDefsContent, servicesContent)
+            tasksDefsContent, servicesContent, externalStacks)
 
 
 def mergeOutputConfig(stackOutput, configParams, stackTemplate):

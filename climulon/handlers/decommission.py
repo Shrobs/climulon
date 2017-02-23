@@ -14,7 +14,7 @@ def decommission_handler(args):
 
 def run_decommission(conf, stackSubset):
     (config, configParams, templates, tasksDefsContent,
-     servicesContent) = utils.check_and_get_conf(conf)
+     servicesContent, externalStacks) = utils.check_and_get_conf(conf)
 
     if stackSubset:
         print("Stack list detected, will only decommission this sub-set "

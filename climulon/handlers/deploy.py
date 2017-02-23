@@ -56,7 +56,7 @@ def run_deployment(conf, deployImages):
         print("Using these arguments for image override : %s" % (deployImages))
 
     (config, configParams, templates, tasksDefsContent,
-     servicesContent) = utils.check_and_get_conf(conf)
+     servicesContent, externalStacks) = utils.check_and_get_conf(conf)
 
     utils.change_workdir(conf)
 
