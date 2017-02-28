@@ -15,6 +15,13 @@ class RequiredTemplateFieldError(BasicException):
                         "template\n" % (field))
         self.message += (json.dumps(stack, indent=3))
 
+class RequiredExtStackFieldError(BasicException):
+
+    def __init__(self, field, stack):
+        self.message = ("ERROR : Required field '%s' missing for this "
+                        "external stack\n" % (field))
+        self.message += (json.dumps(stack, indent=3))
+
 
 class FileNotFoundError(BasicException):
 
