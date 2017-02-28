@@ -19,7 +19,7 @@ def status_handler(args):
 
 def run_status(conf, deploymentTimeout, stabilityTimeout, tick):
     (config, configParams, templates, tasksDefsContent,
-     servicesContent) = utils.check_and_get_conf(conf)
+     servicesContent, externalStacks) = utils.check_and_get_conf(conf)
 
     utils.change_workdir(conf)
 

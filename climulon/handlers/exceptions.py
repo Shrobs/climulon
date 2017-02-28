@@ -15,6 +15,13 @@ class RequiredTemplateFieldError(BasicException):
                         "template\n" % (field))
         self.message += (json.dumps(stack, indent=3))
 
+class RequiredExtStackFieldError(BasicException):
+
+    def __init__(self, field, stack):
+        self.message = ("ERROR : Required field '%s' missing for this "
+                        "external stack\n" % (field))
+        self.message += (json.dumps(stack, indent=3))
+
 
 class FileNotFoundError(BasicException):
 
@@ -41,7 +48,7 @@ class ConfigIntersectionError(BasicException):
 class SubsetStackError(BasicException):
 
     def __init__(self, stack):
-        self.message = ("ERROR : Stack %s not found in environment "
+        self.message = ("ERROR : Stack \"%s\" not found in environment "
                         "config file" % (stack))
 
 
@@ -137,8 +144,8 @@ class EcrRepositoryError(BasicException):
 class UnsupportedRegionStackError(BasicException):
 
     def __init__(self, region, stackName, possibleRegions):
-        self.message = ("ERROR : Unsupported or non existant for stack '%s'"
-                        " : %s" % (stackName, region))
+        self.message = ("ERROR : Unsupported or non existant region for stack '%s'"
+                        " : %s\n" % (stackName, region))
         self.message += ("Choose from one of these regions :\n")
         self.message += str(possibleRegions)
 
@@ -160,3 +167,9 @@ class NotADockerImageName(BasicException):
 
     def __init__(self, image):
         self.message = ("ERROR : Not a correct docker image name : %s" % (image))
+
+class ExternalStackNotFound(BasicException):
+
+    def __init__(self, stackName):
+        self.message = ("ERROR : External stack \"%s\" not found" % (stackName))
+

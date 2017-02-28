@@ -8,7 +8,8 @@ from handlers.exceptions import (RequiredConfigFieldError,
                                  JsonFormatError,
                                  ConfigIntersectionError,
                                  SubsetStackError,
-                                 UnsupportedRegionStackError)
+                                 UnsupportedRegionStackError,
+                                 RequiredExtStackFieldError)
 
 
 def checkConfigFile(path):
@@ -26,6 +27,11 @@ def checkConfigFile(path):
         "StackParameters",
         "StackRegion",
         "ComputeStack"
+    ]
+
+    requiredFieldsExtStacks = [
+        "StackName",
+        "StackRegion"
     ]
 
     print("Checking that config file exists and is valid")
@@ -48,10 +54,19 @@ def checkConfigFile(path):
             if field not in stack:
                 raise RequiredTemplateFieldError(field, stack)
 
+    # If external stack key exists, check that it contains the required fields
+    externalStacks = []
+    if "externalStacks" in config:
+        externalStacks = config["externalStacks"]
+        for stack in externalStacks:
+            for field in requiredFieldsExtStacks:
+                if field not in stack:
+                    raise RequiredExtStackFieldError(field, stack)
+
     # Checking that all Stack regions are supported by cloudformation
     session = boto3.session.Session()
     availableRegions = session.get_available_regions(service_name="cloudformation")
-    for stack in config["infrastructureTemplates"]:
+    for stack in (config["infrastructureTemplates"] + externalStacks):
         if stack["StackRegion"] not in availableRegions:
             raise UnsupportedRegionStackError(
                 stack["StackRegion"], stack["StackName"], availableRegions)
@@ -134,14 +149,18 @@ def check_and_get_conf(conf):
         templateTmp["TemplateContent"] = templateContent
         templates.append(templateTmp)
 
+    externalStacks = []
+    if "externalStacks" in config:
+        externalStacks = config["externalStacks"]
+
     return (config, configParams, templates,
-            tasksDefsContent, servicesContent)
+            tasksDefsContent, servicesContent, externalStacks)
 
 
 def mergeOutputConfig(stackOutput, configParams, stackTemplate):
-    # Merge what is in stackOutput, and put it in configParams.
+    # Merge what is in stackOutput into configParams.
     # stackOutput and configParams are both dicts
-    # If any key is in both dicts, this function will throw and error
+    # If any key is in both dicts, this function will throw an error
     keys_configOutput = set(stackOutput.keys())
     keys_configParams = set(configParams.keys())
     intersection = keys_configOutput & keys_configParams

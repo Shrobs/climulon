@@ -4,8 +4,7 @@ import dependency_engine as engine
 from services.exceptions import ServiceUnresolvedDependency
 
 
-def fill_service_templates(servicesContent, configParams,
-                           configOutput):
+def fill_service_templates(servicesContent, configParams):
     # Filling service templates with variables
     print("Filling service templates with parameters...")
     for service in servicesContent:

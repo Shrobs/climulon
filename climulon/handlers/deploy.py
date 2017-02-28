@@ -56,9 +56,37 @@ def run_deployment(conf, deployImages):
         print("Using these arguments for image override : %s" % (deployImages))
 
     (config, configParams, templates, tasksDefsContent,
-     servicesContent) = utils.check_and_get_conf(conf)
+     servicesContent, externalStacks) = utils.check_and_get_conf(conf)
 
     utils.change_workdir(conf)
+
+    extStacksOutput = {}
+    for stack in externalStacks:
+        extStackOutput = {}
+        client = boto3.client('cloudformation', region_name=stack["StackRegion"])
+        try:
+            describeStackResponse = client.describe_stacks(
+                StackName=stack["StackName"])
+            stack = describeStackResponse["Stacks"][0]
+            stackOutputs = stack["Outputs"]
+
+            print("Getting stack output from %s" % (stack["StackName"]))
+            for outputSet in stackOutputs:
+                extStackOutput[outputSet["OutputKey"]] = outputSet["OutputValue"]
+
+            utils.mergeOutputConfig(extStackOutput, extStacksOutput, stack)
+
+        except botocore.exceptions.ClientError as e:
+            if (e.response['Error']['Code'] ==
+                    'ValidationError' and
+                    "does not exist" in
+                    e.response['Error']['Message']):
+                raise ExternalStackNotFound(stack["StackName"])
+            else:
+                raise
+
+    if externalStacks:
+        utils.mergeOutputConfig(extStacksOutput, configParams, stack)
 
     for template in templates:
         configOutput = {}
@@ -99,12 +127,12 @@ def run_deployment(conf, deployImages):
               "currently running, cannot deploy")
 
     tasksDefsContent = taskDefs.fill_taskDef_templates(
-        tasksDefsContent, configParams, configOutput)
+        tasksDefsContent, configParams)
 
     taskDefs.register_taskDef(tasksDefsContent, template["StackRegion"])
 
     servicesContent = services.fill_service_templates(
-        servicesContent, configParams, configOutput)
+        servicesContent, configParams)
 
     services.update_services(servicesContent, template["StackRegion"])
 
