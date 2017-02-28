@@ -4,8 +4,7 @@ import dependency_engine as engine
 from taskDefs.exceptions import TaskDefUnresolvedDependency
 
 
-def fill_taskDef_templates(tasksDefsContent, configParams,
-                           configOutput):
+def fill_taskDef_templates(tasksDefsContent, configParams):
     # Filling task definition templates with variables
     print("Filling task definition templates with parameters...")
     for taskDef in tasksDefsContent:
