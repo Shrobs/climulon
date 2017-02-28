@@ -1,4 +1,5 @@
 import boto3
+import botocore
 import time
 from handlers import utils
 import dependency_engine as engine
@@ -55,7 +56,7 @@ def run_provision(conf, stackSubset, timeout, dry_run):
                     raise ExternalStackNotFound(stack["StackName"])
                 else:
                     raise
-
+        print("All external stacks available")
 
     # Checking if there are existant stacks with the names of the templates
     # to be created
@@ -116,7 +117,7 @@ def run_provision(conf, stackSubset, timeout, dry_run):
     if dry_run is True:
         return
 
-    # Stack Creation
+    # Stacks Creation
     print("Creating Stacks...")
 
     # Will be filled with the output of the created stack at the end of

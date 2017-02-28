@@ -48,7 +48,7 @@ class ConfigIntersectionError(BasicException):
 class SubsetStackError(BasicException):
 
     def __init__(self, stack):
-        self.message = ("ERROR : Stack %s not found in environment "
+        self.message = ("ERROR : Stack \"%s\" not found in environment "
                         "config file" % (stack))
 
 
@@ -144,8 +144,8 @@ class EcrRepositoryError(BasicException):
 class UnsupportedRegionStackError(BasicException):
 
     def __init__(self, region, stackName, possibleRegions):
-        self.message = ("ERROR : Unsupported or non existant for stack '%s'"
-                        " : %s" % (stackName, region))
+        self.message = ("ERROR : Unsupported or non existant region for stack '%s'"
+                        " : %s\n" % (stackName, region))
         self.message += ("Choose from one of these regions :\n")
         self.message += str(possibleRegions)
 
@@ -171,5 +171,5 @@ class NotADockerImageName(BasicException):
 class ExternalStackNotFound(BasicException):
 
     def __init__(self, stackName):
-        self.message = ("External stack %s not found" % (StackName))
+        self.message = ("ERROR : External stack \"%s\" not found" % (stackName))
 
