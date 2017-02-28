@@ -158,9 +158,9 @@ def check_and_get_conf(conf):
 
 
 def mergeOutputConfig(stackOutput, configParams, stackTemplate):
-    # Merge what is in stackOutput, and put it in configParams.
+    # Merge what is in stackOutput into configParams.
     # stackOutput and configParams are both dicts
-    # If any key is in both dicts, this function will throw and error
+    # If any key is in both dicts, this function will throw an error
     keys_configOutput = set(stackOutput.keys())
     keys_configParams = set(configParams.keys())
     intersection = keys_configOutput & keys_configParams

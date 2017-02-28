@@ -60,6 +60,34 @@ def run_deployment(conf, deployImages):
 
     utils.change_workdir(conf)
 
+    extStacksOutput = {}
+    for stack in externalStacks:
+        extStackOutput = {}
+        client = boto3.client('cloudformation', region_name=stack["StackRegion"])
+        try:
+            describeStackResponse = client.describe_stacks(
+                StackName=stack["StackName"])
+            stack = describeStackResponse["Stacks"][0]
+            stackOutputs = stack["Outputs"]
+
+            print("Getting stack output from %s" % (stack["StackName"]))
+            for outputSet in stackOutputs:
+                extStackOutput[outputSet["OutputKey"]] = outputSet["OutputValue"]
+
+            utils.mergeOutputConfig(extStackOutput, extStacksOutput, stack)
+
+        except botocore.exceptions.ClientError as e:
+            if (e.response['Error']['Code'] ==
+                    'ValidationError' and
+                    "does not exist" in
+                    e.response['Error']['Message']):
+                raise ExternalStackNotFound(stack["StackName"])
+            else:
+                raise
+
+    if externalStacks:
+        utils.mergeOutputConfig(extStacksOutput, configParams, stack)
+
     for template in templates:
         configOutput = {}
         client = boto3.client('cloudformation', region_name=template["StackRegion"])

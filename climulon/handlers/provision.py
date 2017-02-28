@@ -56,7 +56,6 @@ def run_provision(conf, stackSubset, timeout, dry_run):
                     raise ExternalStackNotFound(stack["StackName"])
                 else:
                     raise
-        print("All external stacks available")
 
     # Checking if there are existant stacks with the names of the templates
     # to be created
@@ -122,6 +121,34 @@ def run_provision(conf, stackSubset, timeout, dry_run):
 
     # Will be filled with the output of the created stack at the end of
     # each loop
+    extStacksOutput = {}
+    for stack in externalStacks:
+        extStackOutput = {}
+        client = boto3.client('cloudformation', region_name=stack["StackRegion"])
+        try:
+            describeStackResponse = client.describe_stacks(
+                StackName=stack["StackName"])
+            stack = describeStackResponse["Stacks"][0]
+            stackOutputs = stack["Outputs"]
+
+            print("Getting stack output from %s" % (stack["StackName"]))
+            for outputSet in stackOutputs:
+                extStackOutput[outputSet["OutputKey"]] = outputSet["OutputValue"]
+
+            utils.mergeOutputConfig(extStackOutput, extStacksOutput, stack)
+
+        except botocore.exceptions.ClientError as e:
+            if (e.response['Error']['Code'] ==
+                    'ValidationError' and
+                    "does not exist" in
+                    e.response['Error']['Message']):
+                raise ExternalStackNotFound(stack["StackName"])
+            else:
+                raise
+
+    if externalStacks:
+        utils.mergeOutputConfig(extStacksOutput, configParams, stack)
+
     configOutput = {}
     for template in templates:
         if template["StackName"] in stackSubset:
