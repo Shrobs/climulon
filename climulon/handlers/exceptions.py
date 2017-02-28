@@ -160,3 +160,9 @@ class NotADockerImageName(BasicException):
 
     def __init__(self, image):
         self.message = ("ERROR : Not a correct docker image name : %s" % (image))
+
+class ExternalStackNotFound(BasicException):
+
+    def __init__(self, stackName):
+        self.message = ("External stack %s not found" % (StackName))
+

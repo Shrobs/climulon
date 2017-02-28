@@ -7,7 +7,8 @@ import services
 from handlers.exceptions import (StackExistsError,
                                  TaskDefExistsError,
                                  EcsClusterExistsError,
-                                 StackUnresolvedDependency)
+                                 StackUnresolvedDependency,
+                                 ExternalStackNotFound)
 
 
 def provision_handler(args):
@@ -38,6 +39,23 @@ def run_provision(conf, stackSubset, timeout, dry_run):
     ComputeStackFound = utils.verify_subset(stackSubset, templates)
 
     utils.change_workdir(conf)
+
+    # Checking that all the external stacks exist
+    if externalStacks:
+        print("Checking if external templates exist")
+        for stack in externalStacks:
+            client = boto3.client('cloudformation', region_name=stack["StackRegion"])
+            try:
+                response = client.describe_stacks(StackName=stack["StackName"])
+            except botocore.exceptions.ClientError as e:
+                if (e.response['Error']['Code'] ==
+                        'ValidationError' and
+                        "does not exist" in
+                        e.response['Error']['Message']):
+                    raise ExternalStackNotFound(stack["StackName"])
+                else:
+                    raise
+
 
     # Checking if there are existant stacks with the names of the templates
     # to be created
@@ -202,7 +220,7 @@ def run_provision(conf, stackSubset, timeout, dry_run):
 
         if template["ComputeStack"].lower() == "true" and template["StackName"] in stackSubset:
             tasksDefsContent = taskDefs.fill_taskDef_templates(
-                tasksDefsContent, configParams, configOutput)
+                tasksDefsContent, configParams)
 
             taskDefs.register_taskDef(tasksDefsContent, template["StackRegion"])
 
@@ -217,7 +235,7 @@ def run_provision(conf, stackSubset, timeout, dry_run):
                   (configParams["EcsClusterName"]))
 
             servicesContent = services.fill_service_templates(
-                servicesContent, configParams, configOutput)
+                servicesContent, configParams)
 
             services.create_services(servicesContent, template["StackRegion"])
 

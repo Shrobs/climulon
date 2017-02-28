@@ -99,12 +99,12 @@ def run_deployment(conf, deployImages):
               "currently running, cannot deploy")
 
     tasksDefsContent = taskDefs.fill_taskDef_templates(
-        tasksDefsContent, configParams, configOutput)
+        tasksDefsContent, configParams)
 
     taskDefs.register_taskDef(tasksDefsContent, template["StackRegion"])
 
     servicesContent = services.fill_service_templates(
-        servicesContent, configParams, configOutput)
+        servicesContent, configParams)
 
     services.update_services(servicesContent, template["StackRegion"])
 
