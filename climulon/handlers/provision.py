@@ -7,7 +7,6 @@ import taskDefs
 import services
 from handlers.exceptions import (StackExistsError,
                                  TaskDefExistsError,
-                                 EcsClusterExistsError,
                                  StackUnresolvedDependency,
                                  ExternalStackNotFound)
 
