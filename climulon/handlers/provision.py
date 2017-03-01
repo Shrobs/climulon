@@ -101,16 +101,6 @@ def run_provision(conf, stackSubset, timeout, dry_run):
                         if value == task:
                             raise TaskDefExistsError(task)
 
-            # Checking if there is an ECS cluster with same name
-            print("Checking if there is an ECS cluster with current name")
-            checkClusterResponse = client.describe_clusters(
-                clusters=[configParams["EcsClusterName"]]
-            )
-            if (checkClusterResponse["clusters"] != [] and
-                    checkClusterResponse["clusters"][0]["status"] !=
-                    "INACTIVE"):
-                raise EcsClusterExistsError(configParams["EcsClusterName"])
-
     print("Checks complete, ready for provisioning")
 
     if dry_run is True:
@@ -253,14 +243,6 @@ def run_provision(conf, stackSubset, timeout, dry_run):
             taskDefs.register_taskDef(tasksDefsContent, template["StackRegion"])
 
             client = boto3.client('ecs', region_name=template["StackRegion"])
-
-            # Create the cluster in ECS
-            print("Creating cluster : %s" %
-                  (configParams["EcsClusterName"]))
-            client.create_cluster(
-                clusterName=configParams["EcsClusterName"])
-            print("Cluster created : %s" %
-                  (configParams["EcsClusterName"]))
 
             servicesContent = services.fill_service_templates(
                 servicesContent, configParams)

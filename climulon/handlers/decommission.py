@@ -92,10 +92,4 @@ def run_decommission(conf, stackSubset):
                     )
                 print("Services deleted")
 
-                print("Deleting ECS cluster...")
-                client.delete_cluster(
-                    cluster=configParams["EcsClusterName"]
-                )
-                print("ECS cluster deleted")
-
     print("Decommission complete")
