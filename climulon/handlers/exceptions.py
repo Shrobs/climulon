@@ -120,13 +120,6 @@ class TaskDefExistsError(BasicException):
                         "family named : %s" % (taskDefName))
 
 
-class EcsClusterExistsError(BasicException):
-
-    def __init__(self, EcsClusterName):
-        self.message = ("ERROR : There is already an ECS cluster with the name"
-                        " : %s" % (EcsClusterName))
-
-
 class StackUnresolvedDependency(UnresolvedDependency):
 
     def __init__(self, stackName, missingRefs):
