@@ -18,7 +18,7 @@ def deploy_handler(args):
     # the master config file
     deployImages = {}
 
-    if imageArgs is None:
+    if imageArgs is not None:
         # "Var=image" regex
         argRe = '^[\S]+=[\S]+$'
         argRePattern = re.compile(argRe)
@@ -29,8 +29,6 @@ def deploy_handler(args):
                    '(?:[a-z0-9._-]*)(?<![._-])(?:/(?![._-])[a-z0-9._-]*(?<![._-]))*)'
                    '(?::(?![.-])[a-zA-Z0-9_.-]{1,128})?$')
         imageRePattern = re.compile(imageRe)
-
-
 
         for imageArg in imageArgs:
             if argRePattern.match(imageArg):
