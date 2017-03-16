@@ -1,4 +1,5 @@
 from handlers import provision
+from handlers import update
 from handlers import decommission
 from handlers import deploy
 from handlers import status
@@ -30,6 +31,34 @@ def add_parser_provision(subparsers):
         help='Runs the checks but do not provision the environment',
         action='store_true')
     parser_provision.set_defaults(func=provision.provision_handler)
+
+
+def add_parser_update(subparsers):
+    # Subcommand for stack update
+    parser_update = subparsers.add_parser(
+        'update', help='Update infrastructure, task defs and services')
+    parser_update.add_argument(
+        '-c', '--conf',
+        help='Name of the config file that describes the environment.',
+        required=True,
+        type=str)
+    parser_update.add_argument(
+        '-s', '--stacks',
+        help='Will only update the stacks listed.',
+        type=str, nargs='+')
+    parser_update.add_argument(
+        '-t', '--timeout',
+        help='Timeout for the stack update.',
+        type=int)
+    parser_update.add_argument(
+        '--dry-run',
+        help='Shows an approximate update plan for the stacks',
+        action='store_true')
+    parser_update.add_argument(
+        'y', '--yes',
+        help='Updates stacks without manual input',
+        action='store_true')
+    parser_update.set_defaults(func=update.update_handler)
 
 
 def add_parser_decommission(subparsers):

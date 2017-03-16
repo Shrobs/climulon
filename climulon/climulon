@@ -12,6 +12,7 @@ if __name__ == '__main__':
 
     # Add subparsers
     subparsers.add_parser_provision(subpars)
+    subparsers.add_parser_update(subpars)
     subparsers.add_parser_decommission(subpars)
     subparsers.add_parser_deploy(subpars)
     subparsers.add_parser_status(subpars)
