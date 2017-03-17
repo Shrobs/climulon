@@ -166,3 +166,8 @@ class ExternalStackNotFound(BasicException):
     def __init__(self, stackName):
         self.message = ("ERROR : External stack \"%s\" not found" % (stackName))
 
+class StackNotFound(BasicException):
+
+    def __init__(self, stackName):
+        self.message = ("ERROR : Stack \"%s\" not found" % (stackName))
+

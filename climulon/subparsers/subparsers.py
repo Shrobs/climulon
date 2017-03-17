@@ -43,6 +43,11 @@ def add_parser_update(subparsers):
         required=True,
         type=str)
     parser_update.add_argument(
+        '-n', '--changeset-name',
+        help='Name for the update change-set name.',
+        required=True,
+        type=str)
+    parser_update.add_argument(
         '-s', '--stacks',
         help='Will only update the stacks listed.',
         type=str, nargs='+')
